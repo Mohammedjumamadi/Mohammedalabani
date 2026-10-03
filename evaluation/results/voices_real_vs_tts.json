@@ -1,0 +1,97 @@
+{
+  "dataset": "garystafford/deepfake-audio-detection (voices_real_vs_tts)",
+  "dataset_key": "voices_real_vs_tts",
+  "media_type": "audio",
+  "split": "test",
+  "evaluated_at": "2026-09-22T10:50:25+00:00",
+  "model": {
+    "name": "aimv-audio-detector",
+    "version": "1.0.0 [e4d9874b49]",
+    "source": "https://huggingface.co/mo-thecreator/Deepfake-audio-detection",
+    "license": "apache-2.0"
+  },
+  "n_total_attempted": 200,
+  "n_failed": 0,
+  "failed_examples": [],
+  "n_validation": 62,
+  "n_test": 138,
+  "class_balance_test": {
+    "real": 65,
+    "fake": 73
+  },
+  "auc": 0.8389884088514226,
+  "seconds_per_sample_mean": 1.33,
+  "operating_points": {
+    "default_50": {
+      "threshold": 50.0,
+      "confusion_matrix": {
+        "tp": 62,
+        "fp": 16,
+        "tn": 49,
+        "fn": 11
+      },
+      "n_samples": 138,
+      "accuracy": 0.8043478260869565,
+      "precision": 0.7948717948717948,
+      "recall": 0.8493150684931506,
+      "f1": 0.8211920529801324,
+      "false_positive_rate": 0.24615384615384617,
+      "false_negative_rate": 0.1506849315068493
+    },
+    "validation_tuned": {
+      "threshold": 77.0,
+      "confusion_matrix": {
+        "tp": 62,
+        "fp": 15,
+        "tn": 50,
+        "fn": 11
+      },
+      "n_samples": 138,
+      "accuracy": 0.8115942028985508,
+      "precision": 0.8051948051948052,
+      "recall": 0.8493150684931506,
+      "f1": 0.8266666666666668,
+      "false_positive_rate": 0.23076923076923078,
+      "false_negative_rate": 0.1506849315068493
+    },
+    "platform_fake_threshold_70": {
+      "threshold": 70.0,
+      "confusion_matrix": {
+        "tp": 62,
+        "fp": 15,
+        "tn": 50,
+        "fn": 11
+      },
+      "n_samples": 138,
+      "accuracy": 0.8115942028985508,
+      "precision": 0.8051948051948052,
+      "recall": 0.8493150684931506,
+      "f1": 0.8266666666666668,
+      "false_positive_rate": 0.23076923076923078,
+      "false_negative_rate": 0.1506849315068493
+    }
+  },
+  "platform_three_class": {
+    "fake_threshold": 70.0,
+    "real_threshold": 30.0,
+    "uncertain_rate": 0.014492753623188406,
+    "accuracy_on_decided": 0.8088235294117647,
+    "decided_samples": 136
+  },
+  "data_note": "مقاطع صوتية حقيقية ومولّدة بأدوات TTS/استنساخ (933 لكل فئة).",
+  "data_license": "cc-by-4.0",
+  "seed": 20260921,
+  "accuracy": 0.8043478260869565,
+  "precision": 0.7948717948717948,
+  "recall": 0.8493150684931506,
+  "f1": 0.8211920529801324,
+  "false_positive_rate": 0.24615384615384617,
+  "false_negative_rate": 0.1506849315068493,
+  "confusion_matrix": {
+    "tp": 62,
+    "fp": 16,
+    "tn": 49,
+    "fn": 11
+  },
+  "threshold": 50.0
+}

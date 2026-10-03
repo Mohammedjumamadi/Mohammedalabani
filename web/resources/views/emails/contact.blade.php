@@ -1,0 +1,5 @@
+{{ $senderName }} <{{ $senderEmail }}>
+
+{{ $topic }}
+
+{{ $body }}

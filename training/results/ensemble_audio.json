@@ -1,0 +1,42 @@
+{
+  "english_eval": {
+    "original": {
+      "auc": 0.8319,
+      "accuracy_at_50": 0.755,
+      "fpr_at_50": 0.28,
+      "fnr_at_50": 0.21
+    },
+    "fine_tuned": {
+      "auc": 0.77,
+      "accuracy_at_50": 0.645,
+      "fpr_at_50": 0.66,
+      "fnr_at_50": 0.05
+    },
+    "ensemble_mean": {
+      "auc": 0.8151,
+      "accuracy_at_50": 0.745,
+      "fpr_at_50": 0.29,
+      "fnr_at_50": 0.22
+    }
+  },
+  "arabic_test": {
+    "original": {
+      "auc": 0.5221,
+      "accuracy_at_50": 0.6283,
+      "fpr_at_50": 0.7073,
+      "fnr_at_50": 0.3185
+    },
+    "fine_tuned": {
+      "auc": 0.8222,
+      "accuracy_at_50": 0.7967,
+      "fpr_at_50": 0.2561,
+      "fnr_at_50": 0.195
+    },
+    "ensemble_mean": {
+      "auc": 0.68,
+      "accuracy_at_50": 0.6283,
+      "fpr_at_50": 0.7073,
+      "fnr_at_50": 0.3185
+    }
+  }
+}

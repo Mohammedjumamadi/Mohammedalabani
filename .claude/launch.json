@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "laravel-web",
+      "runtimeExecutable": "php",
+      "runtimeArgs": ["-d", "upload_max_filesize=128M", "-d", "post_max_size=130M", "-d", "memory_limit=512M", "web/artisan", "serve", "--host=127.0.0.1", "--port=8010"],
+      "port": 8010
+    },
+    {
+      "name": "ai-service",
+      "runtimeExecutable": "ai-service/.venv/Scripts/python.exe",
+      "runtimeArgs": ["-m", "uvicorn", "app.main:app", "--app-dir", "ai-service", "--host", "127.0.0.1", "--port", "8001"],
+      "port": 8001
+    }
+  ]
+}

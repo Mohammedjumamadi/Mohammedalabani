@@ -1,0 +1,10 @@
+# PyTorch يُثبَّت أولًا من فهرس CUDA (انظر README.md)
+transformers>=4.44
+huggingface_hub>=0.24
+safetensors>=0.4
+pyarrow>=15
+numpy>=1.26
+pillow>=10.3
+soundfile>=0.12.1
+librosa>=0.10.2
+scikit-learn>=1.4

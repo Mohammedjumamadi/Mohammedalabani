@@ -1,0 +1,86 @@
+# Environment & Secrets
+.env
+.env.backup
+.env.production
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Node & Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/web/public/build
+/web/public/hot
+/web/public/storage
+
+# PHP / Laravel
+/web/vendor/
+/web/storage/*.key
+/web/storage/pail
+/web/storage/framework/cache/*
+!/web/storage/framework/cache/.gitignore
+/web/storage/framework/sessions/*
+!/web/storage/framework/sessions/.gitignore
+/web/storage/framework/testing/*
+!/web/storage/framework/testing/.gitignore
+/web/storage/framework/views/*
+!/web/storage/framework/views/.gitignore
+/web/storage/logs/*
+!/web/storage/logs/.gitignore
+Homestead.json
+Homestead.yaml
+
+# Training & AI Datasets / Checkpoints (>100MB exceeds GitHub limits)
+training/data/
+training/models/
+evaluation/data/
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.onnx
+*.zip
+*.parquet
+
+# Logs
+logs/
+*.log
+
+# IDE & OS
+.idea/
+.vscode/
+.fleet/
+.nova/
+.zed/
+.DS_Store
+Thumbs.db
+desktop.ini

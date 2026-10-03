@@ -1,0 +1,97 @@
+{
+  "dataset": "angads24/deepfake-video (videos_real_vs_deepfake)",
+  "dataset_key": "videos_real_vs_deepfake",
+  "media_type": "video",
+  "split": "test",
+  "evaluated_at": "2026-09-22T10:56:26+00:00",
+  "model": {
+    "name": "aimv-video-ensemble",
+    "version": "1.0.0 [3a99ae26f5]",
+    "source": "https://huggingface.co/prithivMLmods/Deep-Fake-Detector-v2-Model",
+    "license": "apache-2.0"
+  },
+  "n_total_attempted": 50,
+  "n_failed": 0,
+  "failed_examples": [],
+  "n_validation": 9,
+  "n_test": 41,
+  "class_balance_test": {
+    "real": 22,
+    "fake": 19
+  },
+  "auc": 0.6411483253588516,
+  "seconds_per_sample_mean": 32.38,
+  "operating_points": {
+    "default_50": {
+      "threshold": 50.0,
+      "confusion_matrix": {
+        "tp": 15,
+        "fp": 14,
+        "tn": 8,
+        "fn": 4
+      },
+      "n_samples": 41,
+      "accuracy": 0.5609756097560976,
+      "precision": 0.5172413793103449,
+      "recall": 0.7894736842105263,
+      "f1": 0.625,
+      "false_positive_rate": 0.6363636363636364,
+      "false_negative_rate": 0.21052631578947367
+    },
+    "validation_tuned": {
+      "threshold": 73.0,
+      "confusion_matrix": {
+        "tp": 6,
+        "fp": 1,
+        "tn": 21,
+        "fn": 13
+      },
+      "n_samples": 41,
+      "accuracy": 0.6585365853658537,
+      "precision": 0.8571428571428571,
+      "recall": 0.3157894736842105,
+      "f1": 0.46153846153846156,
+      "false_positive_rate": 0.045454545454545456,
+      "false_negative_rate": 0.6842105263157895
+    },
+    "platform_fake_threshold_70": {
+      "threshold": 70.0,
+      "confusion_matrix": {
+        "tp": 6,
+        "fp": 3,
+        "tn": 19,
+        "fn": 13
+      },
+      "n_samples": 41,
+      "accuracy": 0.6097560975609756,
+      "precision": 0.6666666666666666,
+      "recall": 0.3157894736842105,
+      "f1": 0.42857142857142855,
+      "false_positive_rate": 0.13636363636363635,
+      "false_negative_rate": 0.6842105263157895
+    }
+  },
+  "platform_three_class": {
+    "fake_threshold": 70.0,
+    "real_threshold": 30.0,
+    "uncertain_rate": 0.7073170731707317,
+    "accuracy_on_decided": 0.75,
+    "decided_samples": 12
+  },
+  "data_note": "مقاطع فيديو حقيقية ومزيفة (200 لكل فئة). للاستخدام البحثي الأكاديمي فقط.",
+  "data_license": "cc-by-sa-4.0 (نسخة معاد رفعها؛ الأصل يخضع لشروط FaceForensics++)",
+  "seed": 20260921,
+  "accuracy": 0.5609756097560976,
+  "precision": 0.5172413793103449,
+  "recall": 0.7894736842105263,
+  "f1": 0.625,
+  "false_positive_rate": 0.6363636363636364,
+  "false_negative_rate": 0.21052631578947367,
+  "confusion_matrix": {
+    "tp": 15,
+    "fp": 14,
+    "tn": 8,
+    "fn": 4
+  },
+  "threshold": 50.0
+}

@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-09-26T19:45:25+00:00",
+  "results": {
+    "audio_voice": {
+      "dataset": "voices_real_vs_tts",
+      "original": {
+        "n": 200,
+        "auc": 0.8319,
+        "accuracy_at_50": 0.755,
+        "fpr_at_50": 0.28,
+        "fnr_at_50": 0.21,
+        "threshold_from_validation": 1,
+        "test_accuracy": 0.7899
+      },
+      "fine_tuned": {
+        "n": 200,
+        "auc": 0.77,
+        "accuracy_at_50": 0.645,
+        "fpr_at_50": 0.66,
+        "fnr_at_50": 0.05,
+        "threshold_from_validation": 67,
+        "test_accuracy": 0.7246
+      },
+      "promote": false
+    }
+  }
+}

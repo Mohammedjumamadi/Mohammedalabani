@@ -1,0 +1,97 @@
+{
+  "dataset": "Hemg/AI-Generated-vs-Real-Images-Datasets (ai_art_vs_real)",
+  "dataset_key": "ai_art_vs_real",
+  "media_type": "image",
+  "split": "test",
+  "evaluated_at": "2026-09-22T10:50:21+00:00",
+  "model": {
+    "name": "aimv-image-ensemble",
+    "version": "1.0.0 [3a99ae26f5+c7e223baf1]",
+    "source": "https://huggingface.co/prithivMLmods/Deep-Fake-Detector-v2-Model, https://huggingface.co/umm-maybe/AI-image-detector",
+    "license": "apache-2.0, cc-by-4.0"
+  },
+  "n_total_attempted": 200,
+  "n_failed": 0,
+  "failed_examples": [],
+  "n_validation": 54,
+  "n_test": 146,
+  "class_balance_test": {
+    "real": 72,
+    "fake": 74
+  },
+  "auc": 0.6881569069069069,
+  "seconds_per_sample_mean": 1.11,
+  "operating_points": {
+    "default_50": {
+      "threshold": 50.0,
+      "confusion_matrix": {
+        "tp": 43,
+        "fp": 21,
+        "tn": 51,
+        "fn": 31
+      },
+      "n_samples": 146,
+      "accuracy": 0.6438356164383562,
+      "precision": 0.671875,
+      "recall": 0.581081081081081,
+      "f1": 0.6231884057971013,
+      "false_positive_rate": 0.2916666666666667,
+      "false_negative_rate": 0.4189189189189189
+    },
+    "validation_tuned": {
+      "threshold": 46.0,
+      "confusion_matrix": {
+        "tp": 48,
+        "fp": 28,
+        "tn": 44,
+        "fn": 26
+      },
+      "n_samples": 146,
+      "accuracy": 0.6301369863013698,
+      "precision": 0.631578947368421,
+      "recall": 0.6486486486486487,
+      "f1": 0.64,
+      "false_positive_rate": 0.3888888888888889,
+      "false_negative_rate": 0.35135135135135137
+    },
+    "platform_fake_threshold_70": {
+      "threshold": 70.0,
+      "confusion_matrix": {
+        "tp": 33,
+        "fp": 5,
+        "tn": 67,
+        "fn": 41
+      },
+      "n_samples": 146,
+      "accuracy": 0.684931506849315,
+      "precision": 0.868421052631579,
+      "recall": 0.44594594594594594,
+      "f1": 0.5892857142857143,
+      "false_positive_rate": 0.06944444444444445,
+      "false_negative_rate": 0.5540540540540541
+    }
+  },
+  "platform_three_class": {
+    "fake_threshold": 70.0,
+    "real_threshold": 30.0,
+    "uncertain_rate": 0.5,
+    "accuracy_on_decided": 0.726027397260274,
+    "decided_samples": 73
+  },
+  "data_note": "أعمال فنية بشرية مقابل مولّدة (435 / 539). تقيس كشف الصور المولّدة لا تبديل الوجوه.",
+  "data_license": "غير محدد في المستودع",
+  "seed": 20260921,
+  "accuracy": 0.6438356164383562,
+  "precision": 0.671875,
+  "recall": 0.581081081081081,
+  "f1": 0.6231884057971013,
+  "false_positive_rate": 0.2916666666666667,
+  "false_negative_rate": 0.4189189189189189,
+  "confusion_matrix": {
+    "tp": 43,
+    "fp": 21,
+    "tn": 51,
+    "fn": 31
+  },
+  "threshold": 50.0
+}
