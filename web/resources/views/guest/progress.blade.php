@@ -59,6 +59,12 @@
                 </template>
             </ol>
 
+            {{-- سبب التأخر إن طال الانتظار (الخدمة متوقفة، أو إعادة تشغيل التحليل) --}}
+            <div class="site-alert is-warn mt-3" x-show="hint && !lostConnection" x-cloak role="status">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                <span x-text="hint"></span>
+            </div>
+
             {{-- حالة انقطاع الاتصال: تستمر المحاولة تلقائيًا --}}
             <div class="site-alert is-warn mt-3" x-show="lostConnection" x-cloak role="alert">
                 <i class="bi bi-wifi-off" aria-hidden="true"></i>

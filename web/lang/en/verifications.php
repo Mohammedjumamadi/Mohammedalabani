@@ -72,6 +72,12 @@ return [
         'title' => 'Verifying the content',
         'connection_lost' => 'Temporarily unable to reach the server. We will retry automatically.',
         'leave_notice' => 'You can leave this page; analysis continues in the background and we will notify you when it finishes.',
+        'hints' => [
+            'service_offline' => 'The analysis service is currently down, so analysis has not started. It will complete automatically once the service is back; no need to re-upload.',
+            'retrying' => 'Analysis was slow to start, so we restarted it now…',
+            'waiting_worker' => 'The request is waiting its turn in the analysis queue (video and audio are analysed in the background).',
+            'admin_fix' => 'Admin: start the project with start-aimv.bat, or run fix-aimv-queue.ps1 to diagnose.',
+        ],
     ],
 
     'index' => [

@@ -9,6 +9,7 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use App\Models\VerificationRequest;
 use App\Services\Media\FileValidator;
+use App\Services\Verification\PendingWatchdog;
 use App\Services\Verification\VerificationIngestor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -76,11 +77,12 @@ class GuestVerificationController extends Controller
         return view('guest.progress', ['verification' => $verification->load('mediaFile')]);
     }
 
-    public function status(Request $request, VerificationRequest $verification): JsonResponse
+    public function status(Request $request, VerificationRequest $verification, PendingWatchdog $watchdog): JsonResponse
     {
         $this->assertOwnedByThisSession($request, $verification);
 
         $final = $verification->status->isFinal();
+        $hint = $watchdog->inspect($verification);
 
         return response()->json([
             'status' => $verification->status->value,
@@ -92,6 +94,8 @@ class GuestVerificationController extends Controller
             'failed' => $verification->status->value === 'failed',
             'error' => $verification->status->value === 'failed' ? __('ai_errors.'.($verification->error_message ?: 'unexpected')) : null,
             'url' => $final ? route('guest.show', $verification) : null,
+            'hint' => $hint,
+            'hint_text' => $watchdog->message($hint),
         ])->header('Cache-Control', 'no-store');
     }
 

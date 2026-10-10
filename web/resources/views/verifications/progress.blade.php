@@ -57,6 +57,7 @@
                 </template>
             </ol>
 
+            <div class="alert alert-info mt-4 mb-0" x-show="hint && !lostConnection" x-cloak role="status" x-text="hint"></div>
             <div class="alert alert-warning mt-4 mb-0" x-show="lostConnection" x-cloak role="alert">
                 {{ __('verifications.progress.connection_lost') }}
             </div>

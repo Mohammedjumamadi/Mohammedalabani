@@ -21,7 +21,13 @@ class AnalysisDispatcher
         $type = VerificationRequest::with('mediaFile')->find($verificationRequestId)?->mediaFile?->media_type;
 
         if ($type === MediaType::Image && config('aimv.ai.immediate_images', true)) {
-            app()->terminating(fn () => $this->run(new AnalyzeMediaJob($verificationRequestId, immediate: true)));
+            $ran = false;
+            app()->terminating(function () use ($verificationRequestId, &$ran) {
+                if (! $ran) { // مرة واحدة فقط حتى لو أُنهي التطبيق أكثر من مرة (Octane/الاختبارات)
+                    $ran = true;
+                    $this->run(new AnalyzeMediaJob($verificationRequestId, immediate: true));
+                }
+            });
 
             return;
         }

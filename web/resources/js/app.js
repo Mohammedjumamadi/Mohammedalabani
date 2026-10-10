@@ -139,6 +139,7 @@ Alpine.data('progressTracker', (cfg) => ({
     statusLabel: cfg.statusLabel,
     stageLabel: cfg.stageLabel,
     stage: cfg.stage,
+    hint: null,
     lostConnection: false,
 
     init() {
@@ -164,6 +165,7 @@ Alpine.data('progressTracker', (cfg) => ({
                 this.statusLabel = data.status_label;
                 this.stageLabel = data.stage_label;
                 this.stage = data.stage;
+                this.hint = data.hint_text || null;
                 if (data.final) {
                     window.location.href = data.url;
                     return;
