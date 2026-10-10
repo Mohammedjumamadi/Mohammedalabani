@@ -64,6 +64,8 @@ return [
         'url' => env('AI_SERVICE_URL', 'http://127.0.0.1:8001'),
         'key' => env('AI_SERVICE_KEY'),
         'timeout' => (int) env('AI_SERVICE_TIMEOUT', 300),
+        // تحليل الصور فورًا بعد الرفع دون انتظار عامل الطابور (النتيجة خلال ثوانٍ)
+        'immediate_images' => (bool) env('AI_IMMEDIATE_IMAGES', true),
     ],
 
     // القيم الافتراضية للإعدادات القابلة للتعديل من لوحة المدير

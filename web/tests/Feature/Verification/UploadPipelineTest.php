@@ -46,7 +46,8 @@ class UploadPipelineTest extends TestCase
         $response = $this->upload($user, $file);
 
         $verification = VerificationRequest::firstOrFail();
-        $response->assertRedirect(route('verifications.show', $verification));
+        // الصورة تُحلَّل فور إرسال الاستجابة، فيصل المتصفح إلى صفحة التقدم والنتيجة جاهزة خلال ثوانٍ
+        $response->assertRedirect(route('verifications.progress', $verification));
 
         $media = $verification->mediaFile;
         $this->assertSame(hash('sha256', $this->jpegBytes(1)), $media->sha256);

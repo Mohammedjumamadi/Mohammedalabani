@@ -69,11 +69,17 @@ php artisan migrate --seed
 php artisan serve --port=8010
 ```
 
-في نافذة طرفية أخرى شغّل الطابور (لازم لتحليل الملفات في الخلفية):
+في نافذة طرفية أخرى شغّل الطابور (لازم لتحليل الفيديو والصوت، ولإعادة محاولة الصور إن كانت خدمة التحليل متوقفة):
 
 ```bash
-php artisan queue:work
+php artisan queue:work --queue=analysis,default --timeout=900
 ```
+
+> ⚠️ مهام التحليل تُرسل إلى الطابور `analysis`. الأمر `php artisan queue:work` بدون `--queue=analysis,default`
+> لا يقرأ إلا الطابور `default`، فتبقى الطلبات عالقة على «في قائمة الانتظار 5%».
+>
+> الصور تُحلَّل فور رفعها دون انتظار الطابور، وتظهر نتيجتها خلال ثوانٍ (يمكن إيقاف ذلك بـ `AI_IMMEDIATE_IMAGES=false`).
+> إن علق طلب، شغّل `powershell -ExecutionPolicy Bypass -File fix-aimv-queue.ps1` ليشخّص السبب ويصلحه.
 
 ### 2) خدمة الذكاء الاصطناعي (FastAPI)
 
@@ -86,7 +92,7 @@ cp .env.example .env         # ضع فيه AI_SERVICE_KEY نفسه الموجو�
 uvicorn app.main:app --host 127.0.0.1 --port 8001
 ```
 
-يفحص `GET /health` حالة الخدمة والنماذج دون مصادقة. تُنزَّل النماذج تلقائيًا من Hugging Face عند أول استخدام لكل واحد منها (~2 GB إجمالًا)، وتُخزَّن محليًا بعدها.
+يفحص `GET /health` حالة الخدمة والنماذج دون مصادقة. تُنزَّل النماذج تلقائيًا من Hugging Face (~2 GB إجمالًا) وتُخزَّن محليًا بعدها. مع `AI_PRELOAD=1` (الافتراضي في `.env.example` و`start-aimv.ps1`) تُحمَّل عند بدء الخدمة لا عند أول صورة، فلا يتأخر أول تحليل.
 
 ### 3) افتح المنصة
 

@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Storage;
  */
 class AiClient
 {
-    public function analyze(MediaFile $media): AiAnalysis
+    /** @param  int|null  $timeout  مهلة مخصّصة بالثواني (التحليل الفوري للصور يستخدم مهلة أقصر) */
+    public function analyze(MediaFile $media, ?int $timeout = null): AiAnalysis
     {
         $path = Storage::disk($media->disk)->path((string) $media->path);
         $stream = @fopen($path, 'rb');
@@ -26,7 +27,7 @@ class AiClient
 
         try {
             $response = $this->http()
-                ->timeout(config('aimv.ai.timeout'))
+                ->timeout($timeout ?? config('aimv.ai.timeout'))
                 ->attach('file', $stream, 'upload.'.$media->extension)
                 ->post('/v1/analyze', ['media_type' => $media->media_type->value]);
         } catch (ConnectionException $e) {

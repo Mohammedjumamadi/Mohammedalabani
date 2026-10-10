@@ -43,7 +43,8 @@ class GuestVerificationTest extends TestCase
         $response = $this->withSession([])->upload();
         $verification = VerificationRequest::firstOrFail();
 
-        $response->assertRedirect(route('guest.show', $verification));
+        // الصورة تُحلَّل فور إرسال الاستجابة، فيصل المتصفح إلى صفحة التقدم والنتيجة جاهزة خلال ثوانٍ
+        $response->assertRedirect(route('guest.progress', $verification));
         $this->assertSame(RequestStatus::Completed, $verification->status);
         $this->assertTrue($verification->user->isGuestSystem());
 

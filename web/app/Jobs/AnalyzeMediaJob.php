@@ -19,21 +19,27 @@ class AnalyzeMediaJob implements ShouldQueue
 
     /**
      * إذا كانت خدمة التحليل متوقفة مؤقتًا (إعادة تشغيل، تحميل النماذج) لا نُفشل الطلب فورًا:
-     * نعيد المحاولة 6 مرات على مدى ~18 دقيقة، فيكتمل التحليل تلقائيًا بمجرد عودة الخدمة.
+     * نعيد المحاولة 6 مرات على مدى ~4 دقائق، فيكتمل التحليل تلقائيًا بمجرد عودة الخدمة.
      */
     public int $tries = 6;
 
     /** التحليل قد يطول للفيديو؛ ندع المهمة تعمل حتى 15 دقيقة. */
     public int $timeout = 900;
 
-    public function __construct(public readonly int $verificationRequestId)
+    /** مهلة التحليل الفوري للصور (ثوانٍ): بعدها ينتقل الطلب إلى الطابور بدل أن يُبقي الصفحة معلّقة. */
+    public const IMMEDIATE_TIMEOUT = 60;
+
+    /**
+     * @param  bool  $immediate  نُفّذ مباشرة بعد الاستجابة (الصور) لا عبر عامل الطابور
+     */
+    public function __construct(public readonly int $verificationRequestId, public readonly bool $immediate = false)
     {
         $this->onQueue('analysis');
     }
 
     public function backoff(): array
     {
-        return [30, 60, 120, 300, 600];
+        return [5, 15, 30, 60, 120];
     }
 
     public function handle(AiClient $ai, ResultRecorder $recorder): void
@@ -59,9 +65,24 @@ class AnalyzeMediaJob implements ShouldQueue
 
         $request->forceFill(['status' => 'analyzing', 'progress' => 45, 'stage' => 'analyzing'])->save();
 
+        if ($this->immediate) {
+            @set_time_limit(self::IMMEDIATE_TIMEOUT + 30);
+        }
+
         try {
-            $analysis = $ai->analyze($media);
+            $analysis = $ai->analyze($media, $this->immediate ? self::IMMEDIATE_TIMEOUT : null);
         } catch (AiServiceException $e) {
+            if ($e->retryable && $this->immediate) {
+                // تعذّر التحليل الفوري (الخدمة متوقفة أو تحمّل النماذج): نسلّمه للطابور ليعيد المحاولة
+                $request->forceFill(['status' => 'pending', 'progress' => 5, 'stage' => 'queued'])->save();
+                try {
+                    self::dispatch($this->verificationRequestId)->delay(now()->addSeconds(5));
+                } catch (Throwable) {
+                    // مع مشغّل sync تُنفَّذ المهمة فورًا وتسجّل فشلها بنفسها
+                }
+
+                return;
+            }
             // أخطاء عابرة (الخدمة متوقفة/مهلة): نترك الطابور يعيد المحاولة، وبعد آخر محاولة يُستدعى failed()
             if ($e->retryable && $this->attempts() < $this->tries) {
                 // يعود الطلب إلى «في قائمة الانتظار» حتى لا تبقى صفحة التقدم عالقة على «جارٍ التحليل»
