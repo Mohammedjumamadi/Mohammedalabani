@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Middleware\EnsureUserIsActive;
+use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -11,13 +14,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // الرابط العام (share-aimv.ps1) يمر عبر cloudflared على الجهاز نفسه: نثق بالوكيل المحلي فقط،
+        // فتُبنى الروابط بـ https واسم الرابط العام. لا أحد من خارج الجهاز يستطيع ادعاء أنه وكيل.
+        $middleware->trustProxies(at: ['127.0.0.1', '::1']);
+
         $middleware->web(append: [
-            \App\Http\Middleware\SetLocale::class,
+            SetLocale::class,
         ]);
 
         $middleware->alias([
-            'active' => \App\Http\Middleware\EnsureUserIsActive::class,
-            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'active' => EnsureUserIsActive::class,
+            'admin' => EnsureUserIsAdmin::class,
         ]);
 
         // إعادة توجيه الزائر إلى تسجيل الدخول، والمسجَّل إلى لوحته
