@@ -67,13 +67,15 @@ if (Test-Port 3306) {
 }
 
 # 2) خدمة الذكاء الاصطناعي
+# تحميل النماذج عند البدء لا عند أول صورة (متغير البيئة يتقدّم على ai-service\.env)
+$env:AI_PRELOAD = '1'
 Start-Supervised 'ai-service' "& '$Py' -m uvicorn app.main:app --app-dir '$Ai' --host 127.0.0.1 --port 8001" 8001
 
 # 3) موقع Laravel
 Start-Supervised 'web' "& '$Php' -d upload_max_filesize=128M -d post_max_size=130M -d memory_limit=512M '$Web\artisan' serve --host=127.0.0.1 --port=8010" 8010
 
 # 4) عامل الطابور (ينتظر قاعدة البيانات قبل البدء حتى لا يفشل فورًا)
-Start-Supervised 'queue' "while (-not (Get-NetTCPConnection -State Listen -LocalPort 3306 -ErrorAction SilentlyContinue)) { Start-Sleep 3 }; & '$Php' -d memory_limit=512M '$Web\artisan' queue:work --queue=analysis,default --timeout=900 --sleep=2 --max-time=3600"
+Start-Supervised 'queue' "while (-not (Get-NetTCPConnection -State Listen -LocalPort 3306 -ErrorAction SilentlyContinue)) { Start-Sleep 3 }; & '$Php' -d memory_limit=512M '$Web\artisan' queue:work --queue=analysis,default --timeout=900 --sleep=1 --max-time=3600"
 
 # التحقق
 Say "`nانتظار جاهزية الخدمات (تحميل النماذج قد يستغرق دقيقة أو دقيقتين في أول مرة)..." 'Cyan'
