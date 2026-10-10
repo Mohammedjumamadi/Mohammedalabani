@@ -84,3 +84,7 @@ logs/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# cloudflared.exe downloaded by share-aimv.ps1
+tools/
+web/.env.before-public
