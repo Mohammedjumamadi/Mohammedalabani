@@ -10,6 +10,7 @@ use App\Services\Ai\AiServiceException;
 use App\Services\Verification\ResultRecorder;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -44,10 +45,39 @@ class AnalyzeMediaJob implements ShouldQueue
 
     public function handle(AiClient $ai, ResultRecorder $recorder): void
     {
+        // قفل حتى لا يحلّل عامل الطابور وصفحة التقدم الطلب نفسه في الوقت نفسه
+        $lock = Cache::lock("aimv:analyze:{$this->verificationRequestId}", self::IMMEDIATE_TIMEOUT + 60);
+        if (! $lock->get()) {
+            if (! $this->immediate && $this->job) {
+                $this->release(10);
+            }
+
+            return;
+        }
+
+        try {
+            $requeue = $this->analyze($ai, $recorder);
+        } finally {
+            $lock->release();
+        }
+
+        if ($requeue) {
+            // تعذّر التحليل الفوري (الخدمة متوقفة أو تحمّل النماذج): نسلّمه للطابور ليعيد المحاولة
+            try {
+                self::dispatch($this->verificationRequestId)->delay(now()->addSeconds(5));
+            } catch (Throwable) {
+                // مع مشغّل sync تُنفَّذ المهمة فورًا وتسجّل فشلها بنفسها
+            }
+        }
+    }
+
+    /** @return bool هل يجب تسليم الطلب إلى الطابور لإعادة المحاولة */
+    private function analyze(AiClient $ai, ResultRecorder $recorder): bool
+    {
         $request = VerificationRequest::with(['mediaFile', 'user'])->find($this->verificationRequestId);
 
         if (! $request || $request->status->isFinal()) {
-            return;
+            return false;
         }
 
         $media = $request->mediaFile;
@@ -55,7 +85,7 @@ class AnalyzeMediaJob implements ShouldQueue
         if (! $media->existsOnDisk()) {
             $this->markFailed($request, 'file_missing');
 
-            return;
+            return false;
         }
 
         $request->forceFill([
@@ -73,15 +103,9 @@ class AnalyzeMediaJob implements ShouldQueue
             $analysis = $ai->analyze($media, $this->immediate ? self::IMMEDIATE_TIMEOUT : null);
         } catch (AiServiceException $e) {
             if ($e->retryable && $this->immediate) {
-                // تعذّر التحليل الفوري (الخدمة متوقفة أو تحمّل النماذج): نسلّمه للطابور ليعيد المحاولة
                 $request->forceFill(['status' => 'pending', 'progress' => 5, 'stage' => 'queued'])->save();
-                try {
-                    self::dispatch($this->verificationRequestId)->delay(now()->addSeconds(5));
-                } catch (Throwable) {
-                    // مع مشغّل sync تُنفَّذ المهمة فورًا وتسجّل فشلها بنفسها
-                }
 
-                return;
+                return true;
             }
             // أخطاء عابرة (الخدمة متوقفة/مهلة): نترك الطابور يعيد المحاولة، وبعد آخر محاولة يُستدعى failed()
             if ($e->retryable && $this->attempts() < $this->tries) {
@@ -91,11 +115,13 @@ class AnalyzeMediaJob implements ShouldQueue
             }
             $this->markFailed($request, $e->reason, $e);
 
-            return;
+            return false;
         }
 
         $request->forceFill(['progress' => 90, 'stage' => 'saving'])->save();
         $recorder->record($request, $analysis);
+
+        return false;
     }
 
     public function failed(Throwable $exception): void

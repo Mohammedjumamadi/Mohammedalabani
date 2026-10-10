@@ -13,6 +13,7 @@ use App\Services\Ai\AiClient;
 use App\Services\Media\FileValidator;
 use App\Services\Verification\AnalysisDispatcher;
 use App\Services\Verification\VerificationCleaner;
+use App\Services\Verification\PendingWatchdog;
 use App\Services\Verification\VerificationIngestor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -107,11 +108,12 @@ class VerificationController extends Controller
     }
 
     /** استجابة JSON خفيفة يستطلعها شريط التقدم كل ثانيتين. */
-    public function status(VerificationRequest $verification): JsonResponse
+    public function status(VerificationRequest $verification, PendingWatchdog $watchdog): JsonResponse
     {
         $this->authorize('view', $verification);
 
         $final = $verification->status->isFinal();
+        $hint = $watchdog->inspect($verification);
 
         return response()->json([
             'status' => $verification->status->value,
@@ -123,6 +125,8 @@ class VerificationController extends Controller
             'failed' => $verification->status === RequestStatus::Failed,
             'error' => $verification->status === RequestStatus::Failed ? __('ai_errors.'.($verification->error_message ?: 'unexpected')) : null,
             'url' => $final ? route('verifications.show', $verification) : null,
+            'hint' => $hint,
+            'hint_text' => $watchdog->message($hint),
         ])->header('Cache-Control', 'no-store');
     }
 
